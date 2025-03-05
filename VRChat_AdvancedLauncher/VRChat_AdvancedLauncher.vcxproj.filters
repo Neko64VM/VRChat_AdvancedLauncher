@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="AdvancedLauncher">
+      <UniqueIdentifier>{83a1ccca-962d-48fb-9579-4d677c84e169}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{78c7b425-c45c-4e9b-ac99-86b5961530ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\ImGui">
+      <UniqueIdentifier>{f7d36f50-0070-44b8-9372-abce2239d99f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\AppWindow">
+      <UniqueIdentifier>{8c989349-3927-4076-96df-a4fffa731b13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Config">
+      <UniqueIdentifier>{3078ca11-3db2-42e5-b042-9e50b4cdd162}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Utils">
+      <UniqueIdentifier>{6c2085f3-d9aa-42c2-9fd6-c1af331b0d02}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AdvancedLauncher\AdvancedLauncher.h">
+      <Filter>AdvancedLauncher</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ImGui\imconfig.h">
+      <Filter>Framework\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ImGui\imgui.h">
+      <Filter>Framework\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ImGui\imgui_impl_dx11.h">
+      <Filter>Framework\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ImGui\imgui_impl_win32.h">
+      <Filter>Framework\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ImGui\imgui_internal.h">
+      <Filter>Framework\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ImGui\imstb_rectpack.h">
+      <Filter>Framework\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ImGui\imstb_textedit.h">
+      <Filter>Framework\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ImGui\imstb_truetype.h">
+      <Filter>Framework\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\AppWindow\AppWindow.h">
+      <Filter>Framework\AppWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Config\Config.h">
+      <Filter>Framework\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Utils\Utils.h">
+      <Filter>Framework\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="AdvancedLauncher\GUI_Menu.cpp">
+      <Filter>AdvancedLauncher</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\ImGui\imgui.cpp">
+      <Filter>Framework\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\ImGui\imgui_demo.cpp">
+      <Filter>Framework\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\ImGui\imgui_draw.cpp">
+      <Filter>Framework\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\ImGui\imgui_impl_dx11.cpp">
+      <Filter>Framework\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\ImGui\imgui_impl_win32.cpp">
+      <Filter>Framework\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\ImGui\imgui_tables.cpp">
+      <Filter>Framework\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\ImGui\imgui_widgets.cpp">
+      <Filter>Framework\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\AppWindow\AppWindow.cpp">
+      <Filter>Framework\AppWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Config\Config.cpp">
+      <Filter>Framework\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="AdvancedLauncher\AdvancedLauncher.cpp">
+      <Filter>AdvancedLauncher</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Utils\Utils.cpp">
+      <Filter>Framework\Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.gitignore" />
+    <None Include="..\LICENSE" />
+    <None Include="..\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="VRChat_AdvancedLauncher.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
