@@ -10,7 +10,8 @@ private:
 	
 	std::string m_szConfigPath;
 	std::string m_szVRChatConfigPath;
-	std::string m_szVRChatIInstallationPath;
+	std::string m_szVRChatInstallationPath;
+	std::string m_szVRChatFullPath;
 	std::string m_szConfigFileName = "config.json";
 
 	void ProcessThread();

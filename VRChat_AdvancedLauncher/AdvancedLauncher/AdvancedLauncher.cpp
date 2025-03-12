@@ -2,12 +2,14 @@
 #include "../Utils/Utils.h"
 #include "../Framework/ImGui/Font/NotoSansMed.h"
 
+// モニター数を取得
 BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData) {
 	int* count = reinterpret_cast<int*>(dwData);
 	(*count)++;
 	return TRUE;
 }
 
+// デフォルトの設定ファイル
 json get_default_config() {
 	return json{
 		{ "AvatarTest", false },
@@ -37,61 +39,63 @@ bool AdvancedLauncher::Init()
 	else if (!utils::file::IsExistsDirectory(m_szConfigPath))
 		std::filesystem::create_directory(m_szConfigPath);
 
-	// jsonからVRChatのインストール先を読み取る
-	m_szVRChatIInstallationPath = cfg.ReadInstallPath(m_szConfigPath, m_szConfigFileName);
+	std::string configFilePath = m_szConfigPath + m_szConfigFileName;
 
-	// 初回かインストール先が変更された場合
-	if (!utils::file::IsExistsDirectory(m_szVRChatIInstallationPath) || !utils::file::DoesFileExistInDirectory(m_szVRChatIInstallationPath, "VRChat.exe"))
-	{
-		// MsgBox
-		MessageBox(nullptr, "VRChatのインストール先を検索します。\n続けるにはOKを押してください。", "情報", MB_TOPMOST | MB_OK | MB_ICONINFORMATION);
+	// jsonがない場合はファイルを作成
+	if (!utils::file::IsExistsFile(configFilePath)) {
+		std::ofstream fFile(configFilePath);
+		fFile.close();
 
-		// VRChat自体のインストール先を取得
-		m_szVRChatIInstallationPath = FindVRChatInstallationPath();
-
-		if (m_szVRChatIInstallationPath.size() == 0) {
-			MessageBox(nullptr, "VRChatのインストール先が見つかりませんでした。JSONファイルに直接記述してください", "ERROR", MB_TOPMOST | MB_OK | MB_ICONERROR);
-		}	
-		else {
-
-			std::string configFilePath = m_szConfigPath + "config.json";
-
-			// json ファイルを作成
-			if (!utils::file::IsExistsFile(configFilePath)) {
-				std::ofstream fFile(configFilePath);
-				fFile.close();
-
-				// jsonに書き込む
-				std::ifstream in(configFilePath);
-				if (!in || in.peek() == std::ifstream::traits_type::eof()) 
-				{
-					std::cout << "[ LOG ] create and write json file." << std::endl;
-					std::ofstream out(configFilePath);
-					json default_config = get_default_config();
-					out << default_config.dump(4);
-				}
-			}
-
-			// jsonに保存
-			cfg.WriteInstallPath(m_szConfigPath, m_szConfigFileName, m_szVRChatIInstallationPath);
+		// jsonに書き込む
+		std::ifstream in(configFilePath);
+		if (!in || in.peek() == std::ifstream::traits_type::eof())
+		{
+			std::cout << "[ LOG ] create and write json file." << std::endl;
+			std::ofstream out(configFilePath);
+			json default_config = get_default_config();
+			out << default_config.dump(4);
 		}
 	}
+
+	// jsonからVRChatのインストール先を読み取る
+	m_szVRChatInstallationPath = config.ReadInstallPath(m_szConfigPath, m_szConfigFileName);
+
+	// 初回かインストール先が変更された場合
+	if (m_szVRChatInstallationPath.size() == 0 || !utils::file::IsExistsDirectory(m_szVRChatInstallationPath) || !utils::file::DoesFileExistInDirectory(m_szVRChatInstallationPath, "VRChat.exe"))
+	{
+		// MsgBox
+		MessageBox(nullptr, "VRChatのインストール先を検索します。\nこれにはしばらく時間がかかります。続けるにはOKを押してください。", "情報", MB_TOPMOST | MB_OK | MB_ICONINFORMATION);
+
+		// VRChat自体のインストール先を取得
+		m_szVRChatInstallationPath = FindVRChatInstallationPath();
+
+		if (m_szVRChatInstallationPath.size() == 0) {
+			MessageBox(nullptr, "VRChatのインストール先が見つかりませんでした。", "ERROR", MB_TOPMOST | MB_OK | MB_ICONERROR);
+		}	
+		else {
+			// jsonに保存
+			config.WriteInstallPath(m_szConfigPath, m_szConfigFileName, m_szVRChatInstallationPath);
+		}
+	}
+
+	m_szVRChatFullPath = m_szVRChatInstallationPath + "\\launch.exe";
 
 	// モニターの数を取得
 	EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, reinterpret_cast<LPARAM>(&m_iMonitorCount));
 
 	// config.jsonから設定をロード
-	cfg.LoadSetting(m_szConfigPath, m_szConfigFileName);
+	config.LoadSetting(m_szConfigPath, m_szConfigFileName);
 
 	return true;
 }
 
 void AdvancedLauncher::ProcessThread()
 {
-	cfg.SaveSetting(m_szConfigPath, m_szConfigFileName);
+	std::string command = m_szVRChatFullPath + BuildCommand();
+	std::cout << command << std::endl;
 
-	std::string run_cmd = m_szVRChatIInstallationPath + "\\" + BuildCommand();
-	utils::process::StartProcess(run_cmd);
+	utils::process::StartProcess(command.c_str());
+	config.SaveSetting(m_szConfigPath, m_szConfigFileName);
 }
 
 std::string AdvancedLauncher::FindVRChatInstallationPath()
@@ -134,7 +138,6 @@ std::string AdvancedLauncher::BuildCommand()
 {
 	std::ostringstream vOut;
 
-	vOut << "launch.exe";
 	vOut << " \"vrchat://launch/";
 
 	if (g.g_DesktopMode) vOut << " --no-vr";
@@ -202,7 +205,7 @@ std::string AdvancedLauncher::BuildCommand()
 
 	vOut << "\"";
 
-	std::cout << "Builded Command : " << vOut.str() << std::endl;
+	//std::cout << "Builded Command : " << vOut.str() << std::endl;
 
 	return vOut.str();
 }
