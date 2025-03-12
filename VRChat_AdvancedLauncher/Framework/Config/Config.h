@@ -30,12 +30,11 @@ struct Config
 class ConfigManager
 {
 public:
-    void LoadSetting(const std::string config_path, const std::string filename);
-    void SaveSetting(const std::string config_path, const std::string filename);
-
-    std::string ReadInstallPath(const std::string appdata_local, const std::string config_name);
-    void WriteInstallPath(const std::string appdata_local, const std::string config_name, const std::string vrc_path);
+    void LoadSetting(const std::string path, const std::string filename);
+    void SaveSetting(const std::string path, const std::string filename);
+    std::string ReadInstallPath(const std::string& appdata_local, const std::string& config_name);
+    void WriteInstallPath(const std::string& appdata_local, const std::string& config_name, const std::string& vrc_path);
 };
 
 extern Config g;
-extern ConfigManager config;
+extern ConfigManager cfg;
