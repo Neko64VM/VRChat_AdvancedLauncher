@@ -7,20 +7,15 @@
 #include <d3d11.h>
 #pragma comment(lib, "d3d11.lib")
 
-extern ID3D11Device* g_pd3dDevice;
-extern ID3D11DeviceContext* g_pd3dDeviceContext;
-extern IDXGISwapChain* g_pSwapChain;
-extern bool                     g_SwapChainOccluded;
-extern UINT                     g_ResizeWidth, g_ResizeHeight;
-extern ID3D11RenderTargetView* g_mainRenderTargetView;
-
 class AppWindow
 {
 private:
 	WNDCLASSEXW wc{};
 	HWND hwnd;
+
+	void UserFunction();
 public:
-	bool InitWindow();
+	bool CreateAppWindow(const LPCWSTR m_szTitle, const LPCWSTR m_szClass);
 	void WindowLoop();
 	void DestroyAppWindow();
 };

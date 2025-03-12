@@ -14,12 +14,11 @@ void CreateRenderTarget();
 void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-bool AppWindow::InitWindow()
+bool AppWindow::CreateAppWindow(const LPCWSTR m_szTitle, const LPCWSTR m_szClass)
 {
     // Create application window
     ImGui_ImplWin32_EnableDpiAwareness();
-    wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, L"VRChat Advanced Launcher", L"Launcher", nullptr};
-
+    wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, m_szTitle, m_szClass, nullptr};
     wc.hIcon = (HICON)LoadImage(wc.hInstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON), 0);
 
     if (FindWindowW(wc.lpszClassName, wc.lpszMenuName)) {
@@ -66,6 +65,49 @@ bool AppWindow::InitWindow()
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
 
     return true;
+}
+
+void AppWindow::WindowLoop()
+{
+    while (g.m_ApplicationActive)
+    {
+        MSG msg;
+        while (PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE)) {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+
+        // Handle window being minimized or screen locked
+        if (g_SwapChainOccluded && g_pSwapChain->Present(0, DXGI_PRESENT_TEST) == DXGI_STATUS_OCCLUDED) {
+            Sleep(10);
+            continue;
+        }
+        g_SwapChainOccluded = false;
+
+        // Start the Dear ImGui frame
+        ImGui_ImplDX11_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+
+        this->UserFunction();
+
+        // Rendering
+        ImGui::Render();
+        const float clear_color_with_alpha[4] = { 0.f, 0.f, 0.f, 1.f };
+        g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, nullptr);
+        g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, clear_color_with_alpha);
+        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+        // Update and Render additional Platform Windows
+        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+        }
+
+        // Present
+        HRESULT hr = g_pSwapChain->Present(1, 0);
+        g_SwapChainOccluded = (hr == DXGI_STATUS_OCCLUDED);
+    }
 }
 
 void AppWindow::DestroyAppWindow()
