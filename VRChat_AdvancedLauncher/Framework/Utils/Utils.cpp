@@ -151,9 +151,9 @@ namespace utils
 		{
 			return GetProcessIDByName(processName) != 0;
 		}
-		void StartProcess(const std::string target)
+		void StartProcess(const char* command)
 		{
-			system(target.c_str());
+			system(command);
 		}
 		void StopProcess(const std::string processName)
 		{

@@ -29,7 +29,7 @@ namespace utils
 	{
 		DWORD GetProcessIDByName(const std::string processName);
 		bool IsProcessRunning(const std::string processName);
-		void StartProcess(const std::string path);
+		void StartProcess(const char* command);
 		void StopProcess(const std::string processName);
 	}
 
