@@ -2,26 +2,28 @@
 #include "../Utils/Utils.h"
 
 Config g;
-ConfigManager cfg;
+ConfigManager config;
 
 void ConfigManager::LoadSetting(const std::string path, const std::string filename)
 {
     std::string configPath = path + filename;
     std::ifstream file(configPath);
-    json JSON;
-    file >> JSON;
+    if (file.good()) {
+        json JSON;
+        file >> JSON;
 
-    g.g_AvatarTest = JSON["AvatarTest"];
-    g.g_CCX_Enable = JSON["CCXEnable"];
-    g.g_CCX_Option = JSON["CCXOption"];
-    g.g_DesktopMode = JSON["DesktopMode"];
-    g.g_FullScreen = JSON["FullScreen"];
-    g.g_MaxFPS = JSON["MaxFPS"];
-    g.g_MaxFPSEnable = JSON["MaxFPSEnable"];
-    g.g_Monitor = JSON["Monitor"];
-    g.g_ProfileID = JSON["ProfileID"];
-    g.g_WorldTest = JSON["WorldTest"];
-    g.g_WindowSize = JSON["WindowSize"];
+        g.g_AvatarTest = JSON["AvatarTest"];
+        g.g_CCX_Enable = JSON["CCXEnable"];
+        g.g_CCX_Option = JSON["CCXOption"];
+        g.g_DesktopMode = JSON["DesktopMode"];
+        g.g_FullScreen = JSON["FullScreen"];
+        g.g_MaxFPS = JSON["MaxFPS"];
+        g.g_MaxFPSEnable = JSON["MaxFPSEnable"];
+        g.g_Monitor = JSON["Monitor"];
+        g.g_ProfileID = JSON["ProfileID"];
+        g.g_WorldTest = JSON["WorldTest"];
+        g.g_WindowSize = JSON["WindowSize"];
+    }
 
     file.close();
 }

@@ -37,4 +37,4 @@ public:
 };
 
 extern Config g;
-extern ConfigManager cfg;
+extern ConfigManager config;
