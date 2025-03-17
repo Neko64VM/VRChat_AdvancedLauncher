@@ -151,9 +151,29 @@ namespace utils
 		{
 			return GetProcessIDByName(processName) != 0;
 		}
-		void StartProcess(const std::string target)
+		bool StartProcess(const std::string targetPath, const std::string options)
 		{
-			system(target.c_str());
+			// New
+			STARTUPINFO si = { sizeof(STARTUPINFO) };
+			PROCESS_INFORMATION pi{};
+
+			// Build command
+			std::string command = std::string("\"") + targetPath + "\" " + options;
+
+			if (CreateProcess(NULL, const_cast<char*>(command.c_str()), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+				std::cout << "[+] VRChat launched" << std::endl;
+
+				CloseHandle(pi.hProcess);
+				CloseHandle(pi.hThread);
+			}
+			else {
+				std::cerr << "[-] Failed to launch VRChat - Error : " << GetLastError() << std::endl;
+				return false;
+			}
+			
+			return true;
+			// Old
+			//system(target.c_str());
 		}
 		void StopProcess(const std::string processName)
 		{
