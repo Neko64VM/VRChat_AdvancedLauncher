@@ -30,7 +30,7 @@ namespace utils
 		DWORD GetProcessIDByName(const std::string processName);
 		bool IsProcessRunning(const std::string processName);
 		bool StartProcess(const std::string targetPath, const std::string options);
-		void StopProcess(const std::string processName);
+		bool StopProcess(const std::string processName);
 	}
 
 	std::vector<std::string> GetPhysicalDriveList();

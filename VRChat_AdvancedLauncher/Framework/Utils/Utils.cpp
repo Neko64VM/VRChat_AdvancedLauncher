@@ -175,10 +175,35 @@ namespace utils
 			// Old
 			//system(target.c_str());
 		}
-		void StopProcess(const std::string processName)
+		bool StopProcess(const std::string processName)
 		{
-			std::string cmd = "taskkill /IM " + processName + " /F";
-			system(cmd.c_str());
+			HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+			if (hSnap == INVALID_HANDLE_VALUE) {
+				return false;
+			}
+
+			PROCESSENTRY32 pe;
+			pe.dwSize = sizeof(PROCESSENTRY32);
+
+			if (Process32First(hSnap, &pe)) {
+				do {
+					if (_stricmp(pe.szExeFile, processName.c_str()) == 0)
+					{
+						HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pe.th32ProcessID);
+
+						if (hProcess) {
+							TerminateProcess(hProcess, 0);
+							CloseHandle(hProcess);
+							CloseHandle(hSnap);
+
+							return true;
+						}
+					}
+				} while (Process32Next(hSnap, &pe));
+			}
+
+			CloseHandle(hSnap);
+			return false;
 		}
 	}
 
