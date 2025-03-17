@@ -3,16 +3,23 @@
 #include <thread>
 
 ImColor TitleTextCol = ImColor(0.17f, 0.67f, 0.76f, 0.65f);
-const char* profileList[] = { "Profile 1", "Profile 2", "Profile 3" };
 const char* coreList[] = { "3 [ Ryzen5  (3Core * 2CCX)]", "4 [ Ryzen7  (4Core * 2CCX)]", "6 [ Ryzen9  (6Core * 2CCX)]", "8 [ Ryzen9+ (8Core * 2CCX)]" };
 const char* resolutionList[] = { "Display size", "480 * 270", "1280 * 720", "1920 * 1080" };
 
 void AdvancedLauncher::LauncherMenu()
 {
-    const char** monitorList = new const char* [m_iMonitorCount];
-
     ImGuiStyle& style = ImGui::GetStyle();
     style.SeparatorTextBorderSize = 1.f;
+
+    // Profile selector
+    const char** profileList = new const char* [g.g_profileList.size()];
+
+    for (size_t i = 0; i < g.g_profileList.size(); ++i) {
+        profileList[i] = g.g_profileList[i].c_str();
+    }
+
+    // モニター数をメニューで処理できるようにする
+    const char** monitorList = new const char* [m_iMonitorCount];
 
     for (int j = 0; j < m_iMonitorCount; j++) {
         std::string itemStr = "Monitor " + std::to_string(j + 1);
@@ -41,13 +48,22 @@ void AdvancedLauncher::LauncherMenu()
 
     ImGui::TextColored(TitleTextCol, "Misc");
     ImGui::Separator();
-    ImGui::Combo("Profile", &g.g_ProfileID, profileList, IM_ARRAYSIZE(profileList)); // --profile=?
+    ImGui::Combo("Profile", &g.g_ProfileID, profileList, g.g_profileList.size()); // --profile=?
 
     ImGui::Checkbox("CCX Option -", &g.g_CCX_Enable); ImGui::SameLine();
     ImGui::TextColored(ImColor(1.f, 0.f, 0.f, 1.f), "Some Ryzen 1/2/3/5/7000 user only");
 
     if (g.g_CCX_Enable)
         ImGui::Combo("Core per CCX", &g.g_CCX_Option, coreList, IM_ARRAYSIZE(coreList));
+
+    if (ImGui::Button("Open config folder")) {
+        ShellExecute(NULL, "open", "explorer", m_szConfigPath.c_str(), NULL, SW_SHOW);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Edit config")) {
+        std::string path = m_szConfigPath + m_szConfigFileName;
+        ShellExecute(NULL, "open", "notepad.exe", path.c_str(), NULL, SW_SHOW);
+    }
 
     // Launch
     ImGui::SetCursorPosY(ImGui::GetWindowHeight() - 30.f - (style.WindowPadding.y * 4));
