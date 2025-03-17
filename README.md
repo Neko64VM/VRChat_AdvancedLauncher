@@ -31,3 +31,7 @@ config.json という名前で以下の場所にあります。
 ```
 %AppData%Local\VRChatAdvancedLauncher
 ```
+
+### 仕様
+* VRChatのインストール先を取得する為PC内の全ディレクトリ名を取得します（が、VRChatのインストール先を見つけたらすぐにデータが廃棄される  
+https://github.com/Neko64VM/VRChat_AdvancedLauncher/blob/master/VRChat_AdvancedLauncher/Framework/Utils/Utils.cpp#L97
