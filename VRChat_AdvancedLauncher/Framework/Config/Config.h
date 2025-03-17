@@ -24,12 +24,17 @@ struct Config
     int  g_ProfileID = 0;
     bool g_CCX_Enable = false;
     int  g_CCX_Option = 0;
+    std::vector<std::string> g_profileList;
 };
 
 // https://github.com/nlohmann/json
 class ConfigManager
 {
+private:
+    
 public:
+    ~ConfigManager();
+
     void LoadSetting(const std::string path, const std::string filename);
     void SaveSetting(const std::string path, const std::string filename);
     std::string ReadInstallPath(const std::string& appdata_local, const std::string& config_name);

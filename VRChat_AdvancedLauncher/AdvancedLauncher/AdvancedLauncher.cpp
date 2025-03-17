@@ -10,7 +10,8 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 }
 
 // デフォルトの設定ファイル
-json get_default_config() {
+json get_default_config() 
+{
 	return json{
 		{ "AvatarTest", false },
 		{ "CCXEnable", false },
@@ -20,6 +21,7 @@ json get_default_config() {
 		{ "MaxFPS", 144 },
 		{ "MaxFPSEnable", true },
 		{ "Monitor", 0 },
+		{ "Profile", std::vector<std::string>{ "Main", "Sub", "None" }},
 		{ "ProfileID", 0 },
 		{ "VRChatPath", "" },
 		{ "WorldTest", false },
@@ -91,11 +93,10 @@ bool AdvancedLauncher::Init()
 
 void AdvancedLauncher::ProcessThread()
 {
-	std::string command = m_szVRChatFullPath + BuildCommand();
-	std::cout << command << std::endl;
-
-	utils::process::StartProcess(command.c_str());
-	config.SaveSetting(m_szConfigPath, m_szConfigFileName);
+	if (utils::process::StartProcess(m_szVRChatFullPath, BuildCommand()))
+		config.SaveSetting(m_szConfigPath, m_szConfigFileName);
+	else
+		MessageBox(nullptr, "VRChatの起動に失敗しました…。", "ERROR", MB_OK | MB_TOPMOST | MB_ICONERROR);
 }
 
 std::string AdvancedLauncher::FindVRChatInstallationPath()
@@ -103,7 +104,7 @@ std::string AdvancedLauncher::FindVRChatInstallationPath()
 	static std::string targetDir = "SteamLibrary";
 	std::vector<std::string> steam_dir_list;
 
-	// Steamライブラリを探す
+	// PC内のディレクトリ名をスキャンしてSteamライブラリを探す
 	for (const auto& drive_root : utils::GetPhysicalDriveList()) 
 	{
 		auto result = utils::file::FindDirectory(drive_root, targetDir);
@@ -204,8 +205,6 @@ std::string AdvancedLauncher::BuildCommand()
 	}
 
 	vOut << "\"";
-
-	//std::cout << "Builded Command : " << vOut.str() << std::endl;
 
 	return vOut.str();
 }

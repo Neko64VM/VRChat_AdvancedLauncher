@@ -20,10 +20,13 @@ void ConfigManager::LoadSetting(const std::string path, const std::string filena
         g.g_MaxFPS = JSON["MaxFPS"];
         g.g_MaxFPSEnable = JSON["MaxFPSEnable"];
         g.g_Monitor = JSON["Monitor"];
+        g.g_profileList = JSON["Profile"].get<std::vector<std::string>>(); // std::vector<std::string>>‚Æ‚µ‚Ä“Ç‚ÝŽæ‚é
         g.g_ProfileID = JSON["ProfileID"];
         g.g_WorldTest = JSON["WorldTest"];
         g.g_WindowSize = JSON["WindowSize"];
     }
+
+    std::cout << "[ LOG ] Load json - ConfigManager::LoadSetting()" << std::endl;
 
     file.close();
 }
@@ -45,6 +48,7 @@ void ConfigManager::SaveSetting(const std::string path, const std::string filena
         JSON["MaxFPS"] = g.g_MaxFPS;
         JSON["MaxFPSEnable"] = g.g_MaxFPSEnable;
         JSON["Monitor"] = g.g_Monitor;
+        JSON["Profile"] = g.g_profileList;
         JSON["ProfileID"] = g.g_ProfileID;
         JSON["WorldTest"] = g.g_WorldTest;
         JSON["WindowSize"] = g.g_WindowSize;
@@ -106,4 +110,9 @@ void ConfigManager::WriteInstallPath(const std::string& appdata_local, const std
     }
 
     f.close();
+}
+
+ConfigManager::~ConfigManager()
+{
+    g.g_profileList.clear();
 }
