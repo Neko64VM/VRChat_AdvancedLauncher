@@ -50,13 +50,5 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 void AppWindow::UserFunction()
 {
-    ImGuiStyle& style = ImGui::GetStyle();
-
-    ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
-    ImGui::SetNextWindowSize(ImVec2(450.f - (style.WindowPadding.x * 2), 500.f - (style.WindowPadding.y * 2)));
-    ImGui::Begin("VRChat - Advanced Launcher", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
-
     launcher->LauncherMenu();
-
-    ImGui::End();
 }

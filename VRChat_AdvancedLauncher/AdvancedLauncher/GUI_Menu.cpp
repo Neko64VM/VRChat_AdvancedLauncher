@@ -28,6 +28,27 @@ void AdvancedLauncher::LauncherMenu()
         monitorList[j] = itemCopy;
     }
 
+    // Create ImGui window
+    ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
+    ImGui::SetNextWindowSize(ImVec2(450.f - (style.WindowPadding.x * 2), 500.f - (style.WindowPadding.y * 2)));
+    ImGui::Begin("VRChat - Advanced Launcher", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar);
+
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("Config"))
+        {
+            if (ImGui::MenuItem("Open config folder")) {
+                ShellExecute(NULL, "open", "explorer", m_szConfigPath.c_str(), NULL, SW_SHOW);
+            }
+            if (ImGui::MenuItem("Edit config.json")) {
+                std::string path = m_szConfigPath + m_szConfigFileName;
+                ShellExecute(NULL, "open", "notepad.exe", path.c_str(), NULL, SW_SHOW);
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMenuBar();
+    }
+
     ImGui::TextColored(TitleTextCol, "Display");
     ImGui::Separator();
     ImGui::Checkbox("DesktopMode", &g.g_DesktopMode); // --no-vr
@@ -56,15 +77,6 @@ void AdvancedLauncher::LauncherMenu()
     if (g.g_CCX_Enable)
         ImGui::Combo("Core per CCX", &g.g_CCX_Option, coreList, IM_ARRAYSIZE(coreList));
 
-    if (ImGui::Button("Open config folder")) {
-        ShellExecute(NULL, "open", "explorer", m_szConfigPath.c_str(), NULL, SW_SHOW);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Edit config")) {
-        std::string path = m_szConfigPath + m_szConfigFileName;
-        ShellExecute(NULL, "open", "notepad.exe", path.c_str(), NULL, SW_SHOW);
-    }
-
     // Launch
     ImGui::SetCursorPosY(ImGui::GetWindowHeight() - 30.f - (style.WindowPadding.y * 4));
     if (ImGui::Button("Launch", ImVec2(ImGui::GetContentRegionAvail().x, 30.f))) {
@@ -81,6 +93,8 @@ void AdvancedLauncher::LauncherMenu()
         }
     }
 
+    ImGui::End();
+    
     // CleanUp
     for (int k = 0; k < m_iMonitorCount; k++)
         delete[] monitorList[k];
