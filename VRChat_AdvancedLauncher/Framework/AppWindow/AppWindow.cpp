@@ -26,8 +26,11 @@ bool AppWindow::CreateAppWindow(const LPCWSTR m_szTitle, const LPCWSTR m_szClass
         return false;
     }
 
+    int x = (GetSystemMetrics(SM_CXSCREEN) / 2) - (450 / 2);
+    int y = (GetSystemMetrics(SM_CYSCREEN) / 2) - (500 / 1.75);
+
     RegisterClassExW(&wc);
-    hwnd = CreateWindowW(wc.lpszClassName, wc.lpszMenuName, WS_MINIMIZEBOX | WS_SYSMENU, 200, 200, 450, 500, nullptr, nullptr, wc.hInstance, nullptr);
+    hwnd = CreateWindowW(wc.lpszClassName, wc.lpszMenuName, WS_MINIMIZEBOX | WS_SYSMENU, x, y, 450, 500, nullptr, nullptr, wc.hInstance, nullptr);
 
     // Initialize Direct3D
     if (!CreateDeviceD3D(hwnd))
