@@ -33,6 +33,7 @@ void AdvancedLauncher::LauncherMenu()
     ImGui::SetNextWindowSize(ImVec2(450.f - (style.WindowPadding.x * 2), 500.f - (style.WindowPadding.y * 2)));
     ImGui::Begin("VRChat - Advanced Launcher", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar);
 
+    // MenuBar. 設定ファイル関連.
     if (ImGui::BeginMenuBar())
     {
         if (ImGui::BeginMenu("Config"))
