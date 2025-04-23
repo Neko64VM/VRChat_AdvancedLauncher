@@ -6,32 +6,34 @@ VRChatの起動オプションをGUIベースで変更可能にしたちょっ�
 ## 機能について
 GUIメニューの各機能について軽く説明します。
 ### Display
-* DesktopMode : デスクトップモードで起動する
-* FullScreen  : フルスクリーンで起動する
-* FPS Limit   : FPSを制限する
-* Monitor     : VRChatを表示するモニター。モニターのIDについてはWindowsの設定を参照。
-* WindowSize  : ウィンドウのサイズを指定。
+| 名前 | 機能 |
+| ------- | ------ |
+| DesktopMode | デスクトップモードで起動する |
+| FullScreen | フルスクリーンで起動する |
+| FPS Limit | FPSを制限する |
+| Monitor | VRChatを表示するモニター。モニターのIDについてはWindowsの設定を参照 |
+| WindowSize| ウィンドウのサイズを指定 |
 
 ### Test
-* Avatar Test : ローカルテスト中のアバターがアップデートされた場合に自動で再度読み込みを行う。
-* World Test  : ローカルテスト中のワールドがアップデートされた場合に自動で再度読み込みを行う。
+| 名前 | 機能 |
+| ------- | ------ |
+| Avatar Test | ローカルテスト中のアバターがアップデートされた場合に自動で再度読み込みを行う。 |
+| World Test | ローカルテスト中のワールドがアップデートされた場合に自動で再度読み込みを行う。 |
 
 ### Misc
-* Profile : アカウントを切り替えることができる。
-* CCX Option
-```
+| 名前 | 機能 |
+| ------- | ------ |
+| Profile | アカウントを切り替えることができる |
+| CCX Option | 以下を参照 |
+
+#### CCX Option
 一部のRyzen CPUユーザー限定。  
-CCXをまたいでの処理が行われなくなるのでレイテンシが減りパフォーマンスが向上する（らしい）
-```
+CCX/CCDをまたいでの処理が行われなくなるのでレイテンシが減りパフォーマンスが向上する（らしい）
 
 ## その他
 ### 設定ファイル
 config.json という名前で以下の場所にあります。  
 また、このLauncherがPC上に残すファイルもこれだけです。
 ```
-%AppData%Local\VRChatAdvancedLauncher
+%AppData%Local/VRChatAdvancedLauncher
 ```
-
-### 仕様
-* VRChatのインストール先を取得する為PC内の全ディレクトリ名を取得します（が、VRChatのインストール先を見つけたらすぐにデータが廃棄される  
-https://github.com/Neko64VM/VRChat_AdvancedLauncher/blob/master/VRChat_AdvancedLauncher/Framework/Utils/Utils.cpp#L97
