@@ -9,26 +9,6 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 	return TRUE;
 }
 
-// デフォルトの設定ファイル
-json get_default_config() 
-{
-	return json{
-		{ "AvatarTest", false },
-		{ "CCXEnable", false },
-		{ "CCXOption", 2 },
-		{ "DesktopMode", false },
-		{ "FullScreen", false },
-		{ "MaxFPS", 144 },
-		{ "MaxFPSEnable", true },
-		{ "Monitor", 0 },
-		{ "Profile", std::vector<std::string>{ "Main", "Sub", "None" }},
-		{ "ProfileID", 0 },
-		{ "VRChatPath", "" },
-		{ "WorldTest", false },
-		{ "WindowSize", 0 }
-	};
-}
-
 bool AdvancedLauncher::Init()
 {
 	// 各種Pathを取得 (AppData)
@@ -54,8 +34,7 @@ bool AdvancedLauncher::Init()
 		{
 			std::cout << "[ LOG ] create and write json file." << std::endl;
 			std::ofstream out(configFilePath);
-			json default_config = get_default_config();
-			out << default_config.dump(4);
+			out << config.GetDefaultConfig().dump(4);
 		}
 	}
 
@@ -86,7 +65,10 @@ bool AdvancedLauncher::Init()
 	EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, reinterpret_cast<LPARAM>(&m_iMonitorCount));
 
 	// config.jsonから設定をロード
-	config.LoadSetting(m_szConfigPath, m_szConfigFileName);
+	config.LoadLauncherSetting(m_szConfigPath, m_szConfigFileName);
+
+	std::string path = m_szVRChatConfigPath + "config.json";
+	config.LoadVRChatSetting(path);
 
 	return true;
 }
@@ -94,7 +76,7 @@ bool AdvancedLauncher::Init()
 void AdvancedLauncher::ProcessThread()
 {
 	if (utils::process::StartProcess(m_szVRChatFullPath, BuildCommand()))
-		config.SaveSetting(m_szConfigPath, m_szConfigFileName);
+		config.SaveLauncherSetting(m_szConfigPath, m_szConfigFileName);
 	else
 		MessageBox(nullptr, "VRChatの起動に失敗しました…。", "ERROR", MB_OK | MB_TOPMOST | MB_ICONERROR);
 }
@@ -141,14 +123,14 @@ std::string AdvancedLauncher::BuildCommand()
 
 	vOut << " \"vrchat://launch/";
 
-	if (g.g_DesktopMode) vOut << " --no-vr";
+	if (g.m_bDesktopMode) vOut << " --no-vr";
 
-	vOut << " -screen-fullscreen " + std::to_string((int)g.g_FullScreen);
+	vOut << " -screen-fullscreen " + std::to_string((int)g.m_bFullScreen);
 
 	std::string width  = " -screen-width ";
 	std::string height = " -screen-height ";
 
-	switch (g.g_WindowSize)
+	switch (g.m_iWindowSize)
 	{
 	case 0:
 		width  += std::to_string((int)GetSystemMetrics(SM_CXSCREEN));
@@ -172,22 +154,22 @@ std::string AdvancedLauncher::BuildCommand()
 	vOut << width;
 	vOut << height;
 
-	std::string monitor_str = " -monitor " + std::to_string((int)g.g_Monitor + 1);
+	std::string monitor_str = " -monitor " + std::to_string((int)g.m_iMonitor + 1);
 	vOut << monitor_str;
 
-	if (g.g_MaxFPSEnable) {
-		std::string framerate_str = " --fps=" + std::to_string((int)g.g_MaxFPS);
+	if (g.m_bMaxFPSEnable) {
+		std::string framerate_str = " --fps=" + std::to_string((int)g.m_iMaxFPS);
 		vOut << framerate_str;
 	}
 
-	if (g.g_AvatarTest) vOut << " --watch-avatars";
-	if (g.g_WorldTest) vOut << " --watch-world";
+	if (g.m_bAvatarTest) vOut << " --watch-avatars";
+	if (g.m_bWorldTest) vOut << " --watch-world";
 
-	std::string profile_str = " --profile=" + std::to_string((int)g.g_ProfileID);
+	std::string profile_str = " --profile=" + std::to_string((int)g.m_iProfileID);
 	vOut << profile_str;
 
-	if (g.g_CCX_Enable) {
-		switch (g.g_CCX_Option)
+	if (g.m_bCCX_Enable) {
+		switch (g.m_iCCX_Option)
 		{
 		case 0:
 			vOut << " --affinity=3F";

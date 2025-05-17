@@ -18,6 +18,8 @@ private:
 	std::string BuildCommand();
 	std::string FindVRChatInstallationPath();
 public:
+	bool m_bConfigMode{ false };
 	bool Init();
 	void LauncherMenu();
+	void ConfigMenu();
 };

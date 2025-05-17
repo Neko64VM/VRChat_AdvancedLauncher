@@ -50,5 +50,5 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 void AppWindow::UserFunction()
 {
-    launcher->LauncherMenu();
+   launcher->m_bConfigMode? launcher->ConfigMenu() : launcher->LauncherMenu();
 }

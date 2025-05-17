@@ -13,18 +13,26 @@ struct Config
     bool m_ApplicationActive = true;
 
     // Launcher
-    bool g_DesktopMode = false;
-    bool g_FullScreen  = false;
-    bool g_MaxFPSEnable = true;
-    int  g_WindowSize = 0;
-    int  g_MaxFPS = 144;
-    int  g_Monitor = 0;
-    bool g_WorldTest = false;
-    bool g_AvatarTest = false;
-    int  g_ProfileID = 0;
-    bool g_CCX_Enable = false;
-    int  g_CCX_Option = 0;
-    std::vector<std::string> g_profileList;
+    bool m_bDesktopMode{ false };
+    bool m_bFullScreen{ false };
+    bool m_bMaxFPSEnable{ true };
+    int  m_iWindowSize{ 0 };
+    int  m_iMaxFPS{ 144 };
+    int  m_iMonitor{ 0 };
+    bool m_bAvatarTest{ false };
+    bool m_bWorldTest{ false };
+    int  m_iProfileID{ 0 };
+    bool m_bCCX_Enable{ false };
+    int  m_iCCX_Option{ 0 };
+    std::vector<std::string> m_vecProfileList;
+};
+
+struct VRChatConfig
+{
+    int cache_size{ 8 };
+    int cache_expiry_delay{ 3 };
+    char cache_directory[128]{};
+    char picture_output_folder[128]{};
 };
 
 // https://github.com/nlohmann/json
@@ -33,13 +41,16 @@ class ConfigManager
 private:
     
 public:
-    ~ConfigManager();
-
-    void LoadSetting(const std::string path, const std::string filename);
-    void SaveSetting(const std::string path, const std::string filename);
+    json GetDefaultConfig();
+    json GetVRChatDefaultConfig();
+    void LoadVRChatSetting(const std::string path);
+    void WriteVRChatSetting(const std::string path);
+    void LoadLauncherSetting(const std::string path, const std::string filename);
+    void SaveLauncherSetting(const std::string path, const std::string filename);
     std::string ReadInstallPath(const std::string& appdata_local, const std::string& config_name);
     void WriteInstallPath(const std::string& appdata_local, const std::string& config_name, const std::string& vrc_path);
 };
 
 extern Config g;
+extern VRChatConfig vg;
 extern ConfigManager config;
