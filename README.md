@@ -9,7 +9,7 @@ GUIメニューの各機能について軽く説明します。
 ### Display
 | 名前 | 機能 |
 | ------- | ------ |
-| DesktopMode | デスクトップモードで起動する |
+| VR/DesktopMode | VR or デスクトップモードで起動するか選択 |
 | FullScreen | フルスクリーンで起動する |
 | FPS Limit | FPSを制限する |
 | Monitor | VRChatを表示するモニター。モニターのIDについてはWindowsの設定を参照 |
@@ -31,8 +31,14 @@ GUIメニューの各機能について軽く説明します。
 一部のRyzen CPUユーザー限定。  
 CCX/CCDをまたいでの処理が行われなくなるのでレイテンシが減りパフォーマンスが向上する（らしい）
 
+## メニューバー
+| 名前 | 機能 |
+| ------- | ------ |
+| VRChat| %APPDATA%LocalLow内にあるVRChatのconfig.jsonをいじれる |
+| LauncherConfig | %APPDATA%Local内にある |
+
 ## その他
-### 設定ファイル
+### ランチャーの設定ファイル
 config.json という名前で以下の場所にあります。  
 また、このLauncherがPC上に残すファイルもこれだけです。
 ```
