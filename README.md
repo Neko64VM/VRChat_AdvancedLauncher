@@ -37,6 +37,14 @@ CCX/CCDをまたいでの処理が行われなくなるのでレイテンシが�
 | VRChat| %APPDATA%LocalLow内にあるVRChatのconfig.jsonをいじれる |
 | LauncherConfig | %APPDATA%Local内にある |
 
+#### Configure config.json
+| 名前 | 機能 |
+| ------- | ------ |
+| Picture Path | VRChat内で撮影した写真の保存先を選択可能 |
+| Cache MaxSize | キャッシュデータの最大サイズ（単位：GB） |
+| Cache ExpiryDelay | キャッシュデータの最大保存期間（単位：Day） |
+| Cache Path | キャッシュデータの保存先 |
+
 ## その他
 ### ランチャーの設定ファイル
 config.json という名前で以下の場所にあります。  
