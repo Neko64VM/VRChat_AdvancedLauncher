@@ -67,8 +67,24 @@ bool AdvancedLauncher::Init()
 	// config.jsonから設定をロード
 	config.LoadLauncherSetting(m_szConfigPath, m_szConfigFileName);
 
-	std::string path = m_szVRChatConfigPath + "config.json";
-	config.LoadVRChatSetting(path);
+	// jsonがない場合はファイルを作成 #2
+	std::string config_path = m_szVRChatConfigPath + "config.json";
+
+	if (!utils::file::IsExistsFile(config_path)) {
+		std::ofstream fFile(config_path);
+		fFile.close();
+
+		// jsonに書き込む
+		std::ifstream in(config_path);
+		if (!in || in.peek() == std::ifstream::traits_type::eof())
+		{
+			std::cout << "[ LOG ] create and write json file." << std::endl;
+			std::ofstream out(config_path);
+			out << config.GetVRChatDefaultConfig().dump(4);
+		}
+	}
+
+	config.LoadVRChatSetting(config_path);
 
 	return true;
 }
