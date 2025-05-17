@@ -45,6 +45,26 @@ namespace utils
 				vOut = ofn.lpstrFile;
 			}
 		}
+		void SelectDirectoryPath(const char* str, char* vOut, int str_size)
+		{
+			BROWSEINFO bf{};
+			char szFolderPath[MAX_PATH]{};
+
+			bf.lpszTitle = str;
+			bf.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
+
+			LPITEMIDLIST pidl = SHBrowseForFolder(&bf);
+
+			if (pidl != NULL) {
+				if (SHGetPathFromIDList(pidl, szFolderPath)) {
+					if (strlen(szFolderPath) > 1) 
+					{
+						strcpy_s(vOut, str_size, szFolderPath);
+						CoTaskMemFree(pidl);
+					}
+				}
+			}
+		}
 		void SelectDirectoryPath(const char* str, std::string& vOut)
 		{
 			// Path
