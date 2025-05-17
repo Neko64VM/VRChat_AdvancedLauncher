@@ -205,8 +205,8 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             return 0;
         break;
     case WM_CLOSE:
-        PostQuitMessage(0);
         g.m_ApplicationActive = false;
+        PostQuitMessage(0);
         return 0;
     case WM_DESTROY:
         PostQuitMessage(0);
