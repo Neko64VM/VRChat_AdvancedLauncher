@@ -1,4 +1,5 @@
 #include "AdvancedLauncher\AdvancedLauncher.h"
+#include "Framework/Utils/Utils.h"
 
 auto window = std::make_unique<AppWindow>();
 auto launcher = std::make_unique<AdvancedLauncher>();
@@ -10,6 +11,10 @@ int main()
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 #endif
 {
+    // SteamVRが実行されているかをチェック
+    if (utils::process::IsProcessRunning("vrserver.exe"))
+        bIsSteamVRRunning = true;
+
     if (!launcher->Init())
         return 1;
 

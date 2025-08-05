@@ -7,12 +7,14 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
+// JSON Lib : https://github.com/nlohmann/json
+
+// System/Global
+static std::atomic<bool> bApplicationActive(true);
+static bool bIsSteamVRRunning{ false };
+
 struct Config
 {
-    // System
-    bool m_ApplicationActive = true;
-
-    // Launcher
     bool m_bDesktopMode{ false };
     bool m_bFullScreen{ false };
     bool m_bMaxFPSEnable{ true };
@@ -24,7 +26,7 @@ struct Config
     int  m_iProfileID{ 0 };
     bool m_bCCX_Enable{ false };
     int  m_iCCX_Option{ 0 };
-    std::vector<std::string> m_vecProfileList;
+    std::vector<std::string> m_vecProfileList{};
 };
 
 struct VRChatConfig
@@ -35,13 +37,10 @@ struct VRChatConfig
     char picture_output_folder[128]{};
 };
 
-// https://github.com/nlohmann/json
 class ConfigManager
 {
-private:
-    
 public:
-    json GetDefaultConfig();
+    json GetLauncherDefaultConfig();
     json GetVRChatDefaultConfig();
     void LoadVRChatSetting(const std::string path);
     void WriteVRChatSetting(const std::string path);

@@ -72,7 +72,7 @@ bool AppWindow::CreateAppWindow(const LPCWSTR m_szTitle, const LPCWSTR m_szClass
 
 void AppWindow::WindowLoop()
 {
-    while (g.m_ApplicationActive)
+    while (bApplicationActive)
     {
         MSG msg;
         while (PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE)) {
@@ -205,7 +205,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             return 0;
         break;
     case WM_CLOSE:
-        g.m_ApplicationActive = false;
+        bApplicationActive = false;
         PostQuitMessage(0);
         return 0;
     case WM_DESTROY:

@@ -6,7 +6,7 @@ VRChatConfig vg;
 ConfigManager config;
 
 // デフォルトの設定
-json ConfigManager::GetDefaultConfig()
+json ConfigManager::GetLauncherDefaultConfig()
 {
     return json{
             { "AvatarTest", false },
