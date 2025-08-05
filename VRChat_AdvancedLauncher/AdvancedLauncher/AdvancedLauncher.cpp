@@ -34,7 +34,8 @@ bool AdvancedLauncher::Init()
 		{
 			std::cout << "[ LOG ] create and write json file." << std::endl;
 			std::ofstream out(configFilePath);
-			out << config.GetDefaultConfig().dump(4);
+			out << config.GetLauncherDefaultConfig().dump(4);
+			out.close();
 		}
 	}
 
@@ -67,6 +68,11 @@ bool AdvancedLauncher::Init()
 	// config.jsonから設定をロード
 	config.LoadLauncherSetting(m_szConfigPath, m_szConfigFileName);
 
+	if (bIsSteamVRRunning)
+	{
+		g.m_bDesktopMode = false;
+	}
+
 	// jsonがない場合はファイルを作成 #2
 	std::string config_path = m_szVRChatConfigPath + "config.json";
 
@@ -91,24 +97,30 @@ bool AdvancedLauncher::Init()
 
 void AdvancedLauncher::ProcessThread()
 {
-	if (utils::process::StartProcess(m_szVRChatFullPath, BuildCommand()))
+	bool result = utils::process::StartProcess(m_szVRChatFullPath, BuildCommand());
+
+	if (result)
 		config.SaveLauncherSetting(m_szConfigPath, m_szConfigFileName);
-	else
+	else 
 		MessageBox(nullptr, "VRChatの起動に失敗しました…。", "ERROR", MB_OK | MB_TOPMOST | MB_ICONERROR);
 }
 
 std::string AdvancedLauncher::FindVRChatInstallationPath()
 {
-	static std::string targetDir = "SteamLibrary";
+	static std::string szTargetDir0 = "Steam";
+	static std::string szTargetDir1 = "SteamLibrary";
 	std::vector<std::string> steam_dir_list;
 
 	// PC内のディレクトリ名をスキャンしてSteamライブラリを探す
 	for (const auto& drive_root : utils::GetPhysicalDriveList()) 
 	{
-		auto result = utils::file::FindDirectory(drive_root, targetDir);
+		auto result0 = utils::file::FindDirectory(drive_root, szTargetDir0);
+		auto result1 = utils::file::FindDirectory(drive_root, szTargetDir1);
 
-		if (result)
-			steam_dir_list.push_back(*result);
+		if (result0)
+			steam_dir_list.push_back(*result0);
+		else if (result1)
+			steam_dir_list.push_back(*result1);
 	}
 
 	// SteamLibをベースにVRChatのインストール先を探す
