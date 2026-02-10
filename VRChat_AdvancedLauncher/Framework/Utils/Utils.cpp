@@ -181,19 +181,14 @@ namespace utils
 			std::string command = std::string("\"") + targetPath + "\" " + options;
 
 			if (CreateProcess(NULL, const_cast<char*>(command.c_str()), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
-				std::cout << "[+] VRChat launched" << std::endl;
-
 				CloseHandle(pi.hProcess);
 				CloseHandle(pi.hThread);
 			}
 			else {
-				std::cerr << "[-] Failed to launch VRChat - Error : " << GetLastError() << std::endl;
 				return false;
 			}
 			
 			return true;
-			// Old
-			//system(target.c_str());
 		}
 		bool StopProcess(const std::string processName)
 		{
@@ -247,20 +242,15 @@ namespace utils
 		}
 		return driveList;
 	}
-	std::string ConvertWideToMultiByte(const std::wstring& target_str)
+	std::string ConvertWideToMultiByte(const std::wstring& src)
 	{
-		if (target_str.empty())
+		if (src.empty())
 			return std::string();
 
-		const int bufferSize = WideCharToMultiByte(CP_UTF8, 0, target_str.c_str(), -1, nullptr, 0, nullptr, nullptr);
+		int size = WideCharToMultiByte(CP_UTF8, 0, &src[0], (int)src.size(), NULL, 0, NULL, NULL);
+		std::string result(size, 0);
+		WideCharToMultiByte(CP_UTF8, 0, &src[0], (int)src.size(), &result[0], size, NULL, NULL);
 
-		if (bufferSize == 0)
-			return std::string();
-
-		std::string vOut(bufferSize - 1, '\0');
-		WideCharToMultiByte(CP_UTF8, 0, target_str.c_str(), -1, &vOut[0], bufferSize, nullptr, nullptr);
-
-		return vOut;
+		return result;
 	}
-	
 }
