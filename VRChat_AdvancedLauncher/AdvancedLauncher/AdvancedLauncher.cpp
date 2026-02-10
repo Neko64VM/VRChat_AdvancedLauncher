@@ -45,18 +45,14 @@ bool AdvancedLauncher::Init()
 	// 初回かインストール先が変更された場合
 	if (m_szVRChatInstallationPath.size() == 0 || !utils::file::IsExistsDirectory(m_szVRChatInstallationPath) || !utils::file::DoesFileExistInDirectory(m_szVRChatInstallationPath, "VRChat.exe"))
 	{
-		// MsgBox
-		MessageBox(nullptr, "VRChatのインストール先を検索します。\nこれにはしばらく時間がかかります。続けるにはOKを押してください。", "情報", MB_TOPMOST | MB_OK | MB_ICONINFORMATION);
-
 		// VRChat自体のインストール先を取得
-		m_szVRChatInstallationPath = FindVRChatInstallationPath();
+		m_szVRChatInstallationPath = FindVRChatPath();
 
 		if (m_szVRChatInstallationPath.size() == 0) {
 			MessageBox(nullptr, "VRChatのインストール先が見つかりませんでした。", "ERROR", MB_TOPMOST | MB_OK | MB_ICONERROR);
 		}	
 		else {
-			// jsonに保存
-			config.WriteInstallPath(m_szConfigPath, m_szConfigFileName, m_szVRChatInstallationPath);
+			config.WriteInstallPath(m_szConfigPath, m_szConfigFileName, m_szVRChatInstallationPath); // jsonに保存
 		}
 	}
 
@@ -68,6 +64,7 @@ bool AdvancedLauncher::Init()
 	// config.jsonから設定をロード
 	config.LoadLauncherSetting(m_szConfigPath, m_szConfigFileName);
 
+	// ToDo.
 	if (bIsSteamVRRunning)
 	{
 		g.m_bDesktopMode = false;
@@ -105,43 +102,30 @@ void AdvancedLauncher::ProcessThread()
 		MessageBox(nullptr, "VRChatの起動に失敗しました…。", "ERROR", MB_OK | MB_TOPMOST | MB_ICONERROR);
 }
 
-std::string AdvancedLauncher::FindVRChatInstallationPath()
+std::string AdvancedLauncher::FindVRChatPath()
 {
-	static std::string szTargetDir0 = "Steam";
-	static std::string szTargetDir1 = "SteamLibrary";
-	std::vector<std::string> steam_dir_list;
+	// レジストリを読みSteamのインストール先を見つける
+	// HKEY_LOCAL_MACHINE\SOFTWARE\Valve\Steam (32-bit)
+	// HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Valve\Steam (64-bit)
+	HKEY hKey{};
+	std::string subKey{ "SOFTWARE\\WOW6432Node\\Valve\\Steam" };
+	std::string value{ "InstallPath" };
+	std::wstring reg_value = ReadRegistryString(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Wow6432Node\\Valve\\Steam", L"InstallPath");
+	std::string steam_path = utils::ConvertWideToMultiByte(reg_value);
 
-	// PC内のディレクトリ名をスキャンしてSteamライブラリを探す
-	for (const auto& drive_root : utils::GetPhysicalDriveList()) 
-	{
-		auto result0 = utils::file::FindDirectory(drive_root, szTargetDir0);
-		auto result1 = utils::file::FindDirectory(drive_root, szTargetDir1);
+	if (steam_path.size() == 0)
+		return std::string();
 
-		if (result0)
-			steam_dir_list.push_back(*result0);
-		else if (result1)
-			steam_dir_list.push_back(*result1);
+	steam_path += "\\steamapps\\libraryfolders.vdf"; // Steamのlibraryfolders.vdfを読み、VRChatがインストールされている可能性のあるパスを取得する
+
+	std::vector<std::string> library_paths = FindSteamPath(steam_path);
+
+	for (const std::string& path : library_paths) {
+		std::string potential_path = path + "//steamapps//common//VRChat";
+		if (utils::file::IsExistsDirectory(potential_path) && utils::file::DoesFileExistInDirectory(potential_path, "VRChat.exe"))
+			return potential_path;
 	}
 
-	// SteamLibをベースにVRChatのインストール先を探す
-	for (const auto& dir : steam_dir_list)
-	{
-		std::string common_path = dir + "\\steamapps\\common";
-
-		if (std::filesystem::is_directory(common_path)) {
-			auto vrc_dir = std::filesystem::directory_iterator(common_path);
-
-			for (const auto& file : vrc_dir) {
-				if (file.path().string().find("VRChat") != std::string::npos) {
-					steam_dir_list.clear();
-					return file.path().string();
-				}
-			}
-		}
-	}
-
-	steam_dir_list.clear();
-	
 	return std::string();
 }
 
